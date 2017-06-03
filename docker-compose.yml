@@ -1,0 +1,153 @@
+version: '2'
+
+networks: 
+  main:
+
+services:
+    nginx_proxy:
+        image: nginx
+        ports:
+            - "8123:80"
+        volumes:
+            - ./nginx.conf:/etc/nginx/nginx.conf
+        networks: 
+            - main  
+        depends_on: 
+          - clickhouse_shard_1_replica_1
+          - clickhouse_shard_1_replica_2
+          - clickhouse_shard_2_replica_1
+          - clickhouse_shard_2_replica_2
+          - clickhouse_shard_3_replica_1
+          - clickhouse_shard_3_replica_2
+    
+    zoo1:
+        image: zookeeper:latest
+        expose:
+            - "2181"
+            - "2888"
+            - "3888"
+        environment:
+            ZOO_MY_ID: "1"
+            ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+        networks: 
+            - main  
+
+    zoo2:
+        image: zookeeper:latest
+        expose:
+            - "2181"
+            - "2888"
+            - "3888"
+        environment:
+            ZOO_MY_ID: "2"
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zoo3:2888:3888
+        networks: 
+            - main  
+
+    zoo3:
+        image: zookeeper:latest
+        expose:
+            - "2181"
+            - "2888"
+            - "3888"
+        environment:
+            ZOO_MY_ID: "3"
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
+        networks: 
+            - main  
+
+    clickhouse_shard_1_replica_1:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9010"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_1_replica_1.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main  
+          
+    clickhouse_shard_1_replica_2:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9011"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_1_replica_2.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main
+
+    clickhouse_shard_2_replica_1:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9012"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_2_replica_1.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main  
+          
+    clickhouse_shard_2_replica_2:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9013"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_2_replica_2.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main
+
+    clickhouse_shard_3_replica_1:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9014"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_3_replica_1.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main  
+          
+    clickhouse_shard_3_replica_2:
+        image: yandex/clickhouse-server
+        expose:
+          #replica sync port
+          - "9015"
+          #client port
+          - "9000"
+        depends_on: 
+          - zoo1
+          - zoo2
+          - zoo3
+        volumes:
+          - ./clickhouse_shard_3_replica_2.xml:/etc/clickhouse-server/config.xml
+        networks: 
+            - main
