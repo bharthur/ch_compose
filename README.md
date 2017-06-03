@@ -42,7 +42,7 @@ You can connect to a specific clickhouse service by using any of the following p
 ###### Example: 
 `http://localhost:8123/clickhouse_shard_1_replica_1`
 
-###Web
+### Web
 
 ![MacDown logo](https://camo.githubusercontent.com/f56161a70041c6026f94f6a5a3f9b7bdf1f34e6f/687474703a2f2f75692e74616269782e696f2f6173736574732f696d616765732f6c6f676f74616269782e706e67)
 
@@ -80,7 +80,7 @@ You can connect to a specific clickhouse service by using any of the following p
 
 All services are connected to internal network `chcompose_main` of Docker. 
 
-###DNS
+### DNS
 
   - `zoo1`
   - `zoo2`
