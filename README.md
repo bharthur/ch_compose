@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-Get docker form here [https://www.docker.com/community-edition](https://www.docker.com/community-edition).
+Get docker from here [https://www.docker.com/community-edition](https://www.docker.com/community-edition).
 
 ### Some basic commands
 
